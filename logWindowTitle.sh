@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ ! -d ~/LOG ]
+then
+	mkdir ~/LOG
+fi
+
+
 while true
 do
 	# Get current window title
