@@ -13,14 +13,22 @@ do
 
 	# Format datestamp
 	currentTime=`date "+%H:%M:%S"`
-	currentDate=`date "+%Y%m%d"`
+	currentDateShort=`date "+%Y%m%d"`
+	currentDateLong=`date "+%Y-%m-%d"`
 
 	# 2013-01-17 15:17:57
-	currentTimestamp=`date "+%Y-%m-%d %H:%M:%S"`
+	currentTimestamp=`date -d "${currentDateLong} ${currentTime}" "+%s"`
+
 
 	if [ "${currentWindowTitle}" != "${oldWindowTitle}" ]
 	then
-		echo "${currentTime} ${currentWindowTitle}" >> ~/LOG/`date +%y%m%d`.log
+		if [ -f ~/LOG/`date +%y%m%d`.log ]
+		then
+			lastTime=$(tail -1 ~/LOG/${currentDateShort}.log | awk '{print $1}')
+			lastTimestamp=`date -d "${currentDateLong} ${lastTime}" "+%s"`
+			timeDifferenceSeconds=$((currentTimestamp-lastTimestamp))
+		fi
+		echo "${currentTime} ${timeDifferenceSeconds} ${currentWindowTitle}" >> ~/LOG/${currentDateShort}.log
 	fi
 	oldWindowTitle=${currentWindowTitle}
 	sleep 1
